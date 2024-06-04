@@ -1,12 +1,38 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+// Initialize Express app
 const app = express();
-const port = 3000;
+app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.send('Hello, TypeScript with Express!');
+
+app.get('/users/:id', (req: Request, res: Response) => {
+  const userId: number = parseInt(req.params.id);
+
+  // type checks
+  if (isNaN(userId)) {
+    res.status(400).send('Invalid user ID');
+    return;
+  }
+
+
+  const user: User = {
+    id: userId,
+    name: 'John Doe',
+    email: 'john@example.com',
+  };
+
+  res.json(user);
 });
 
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
